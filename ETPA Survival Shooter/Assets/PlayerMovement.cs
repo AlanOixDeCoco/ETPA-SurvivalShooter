@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
         movement.Normalize();
         movement *= _moveSpeed;
 
+        movement = Quaternion.Euler(0, -45, 0) * movement;
+
         // Rotate mesh
         _mesh.LookAt(transform.position + movement);
 
