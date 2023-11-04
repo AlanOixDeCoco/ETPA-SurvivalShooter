@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Transform _mesh;
+
+    [Header("Parameters")]
     [SerializeField] private float _moveSpeed = 6f;
+    
 
     private CharacterController _characterController;
 
@@ -21,14 +26,12 @@ public class PlayerMovement : MonoBehaviour
         movement.Normalize();
         movement *= _moveSpeed;
 
-        Camera mainCamera = Camera.main;
-        Vector3 camRot = mainCamera.transform.eulerAngles;
-        Debug.Log(camRot);
+        // Rotate mesh
+        _mesh.LookAt(transform.position + movement);
 
-        movement = Quaternion.Euler(0, camRot.y, 0) * movement;
-
+        // Apply movement
         _characterController.SimpleMove(movement);
-        transform.GetChild(0).Rotate(0, camRot.y - transform.GetChild(0).eulerAngles.y, 0);
+        
 
         //RaycastHit hit;
         //Physics.Raycast(transform.position - (Vector3.up * (_characterController.height/2)), -Vector3.up, out hit);
