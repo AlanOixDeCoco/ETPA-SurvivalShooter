@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform _mesh;
+    [SerializeField] private Animator _animator;
 
     [Header("Parameters")]
     [SerializeField] private float _moveSpeed = 6f;
@@ -33,19 +34,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Apply movement
         _characterController.SimpleMove(movement);
-        
 
-        //RaycastHit hit;
-        //Physics.Raycast(transform.position - (Vector3.up * (_characterController.height/2)), -Vector3.up, out hit);
 
-        //float distanceToGround = hit.distance;
-        //Debug.Log(distanceToGround);
-
-        //if(distanceToGround > 0.8 && distanceToGround < 1f)
-        //{
-        //    Vector3 newPos = transform.position;
-        //    newPos.y = hit.point.y + (_characterController.height / 2) + 0.7f;
-        //    transform.position = newPos;
-        //}
+        // Update animator parameters
+        _animator.SetFloat("velocity", movement.magnitude);
     }
 }
