@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
     }
 
-    public void PlayerMove()
+    private void Update()
     {
         Vector3 movement = Vector3.zero;
         movement.x = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
