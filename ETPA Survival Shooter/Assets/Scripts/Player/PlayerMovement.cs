@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] private float _moveSpeed = 6f;
-    
+
 
     private CharacterController _characterController;
 
@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
     }
 
-    private void Update()
+    public void PlayerMove()
     {
         Vector3 movement = Vector3.zero;
         movement.x = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
         _characterController.SimpleMove(movement);
 
         // Update animator parameters
-        _animator.SetFloat("velocity", movement.magnitude);
+        _animator.SetBool("running", true);
+        _animator.SetFloat("velocity", _characterController.velocity.magnitude);
     }
 }
