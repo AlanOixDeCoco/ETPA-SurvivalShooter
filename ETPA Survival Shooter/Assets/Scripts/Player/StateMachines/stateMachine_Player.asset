@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718ecb92f024ea14e8d2f2450ca5def2, type: 3}
   m_Name: stateMachine_Player
   m_EditorClassIdentifier: 
-  _initialState: {fileID: 0}
+  _initialState: {fileID: 11400000, guid: b80dfccbf1648b84c8b6ee24c0bfc927, type: 2}
   _emptyState: {fileID: 0}
-  _transitions: []
+  _transitions:
+  - originState: {fileID: 11400000, guid: b80dfccbf1648b84c8b6ee24c0bfc927, type: 2}
+    condition: {fileID: 0}
+    trueState: {fileID: 0}
+    falseState: {fileID: 0}
