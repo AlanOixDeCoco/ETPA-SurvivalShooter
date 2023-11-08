@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowTarget : MonoBehaviour
+public class FollowComponent : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform _target;
