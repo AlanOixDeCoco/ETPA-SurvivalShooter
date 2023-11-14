@@ -4,20 +4,14 @@ using UnityEngine;
 
 public class PlayerIdleState : IState
 {
-    private Animator _animator;
-
-    public PlayerIdleState(Animator animator) { 
-        _animator = animator;
-    }
-
     public void OnEnter()
     {
-        _animator.SetTrigger("idle");
+        return;
     }
 
     public void OnExit()
     {
-        _animator.ResetTrigger("idle");
+        return;
     }
 
     public void Tick()
@@ -29,51 +23,45 @@ public class PlayerIdleState : IState
 public class PlayerWalkState : IState
 {
     private PlayerController _playerController;
-    private Animator _animator;
 
-    public PlayerWalkState(PlayerController playerController, Animator animator)
+    public PlayerWalkState(PlayerController playerController)
     {
         _playerController = playerController;
-        _animator = animator;
     }
 
     public void OnEnter()
     {
-        _animator.SetTrigger("walk");
+        return;
     }
 
     public void OnExit()
     {
-        _animator.ResetTrigger("walk");
-        _animator.speed = 1f;
+        return;
     }
 
     public void Tick()
     {
         _playerController.Walk();
-        _animator.speed = _playerController.MoveInput.magnitude;
     }
 }
 
 public class PlayerRunState : IState
 {
     private PlayerController _playerController;
-    private Animator _animator;
 
-    public PlayerRunState(PlayerController playerController, Animator animator)
+    public PlayerRunState(PlayerController playerController)
     {
         _playerController = playerController;
-        _animator = animator;
     }
 
     public void OnEnter()
     {
-        _animator.SetTrigger("run");
+        return;
     }
 
     public void OnExit()
     {
-        _animator.ResetTrigger("run");
+        return;
     }
 
     public void Tick()

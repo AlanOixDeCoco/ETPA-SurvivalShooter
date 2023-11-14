@@ -51,9 +51,9 @@ public class PlayerController : MonoBehaviour
         _stateMachine = new StateMachine();
 
         // Create states
-        var idleState = new PlayerIdleState(_animator);
-        var walkState = new PlayerWalkState(this, _animator);
-        var runState = new PlayerRunState(this, _animator);
+        var idleState = new PlayerIdleState();
+        var walkState = new PlayerWalkState(this);
+        var runState = new PlayerRunState(this);
 
         // Idle --> Walk
         _stateMachine.AddTransition(idleState, walkState, () =>
