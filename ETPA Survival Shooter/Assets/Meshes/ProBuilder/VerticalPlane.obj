@@ -1,0 +1,23 @@
+# ProBuilder 5.1.1
+# https://unity3d.com/unity/features/worldbuilding/probuilder
+# 15/11/2023 16:18:45
+
+mtllib ./VerticalPlane.mtl
+o VerticalPlane
+
+g Plane
+v 1 3 -2.384186E-07
+v 1 0 0
+v -1 3 -2.384186E-07
+v -1 0 0
+
+vt 1 3
+vt 1 0
+vt -1 3
+vt -1 0
+
+vn 0 7.947286E-08 1
+
+usemtl mat_grid_2
+f 3/3/1 4/4/1 2/2/1 1/1/1
+
