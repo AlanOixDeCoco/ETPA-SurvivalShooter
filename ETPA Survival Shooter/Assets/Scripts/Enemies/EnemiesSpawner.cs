@@ -33,6 +33,7 @@ public class EnemiesSpawner : MonoBehaviour
     {
         _enemies[_enemies.Length - 1].SetActive(true);
 
+
         IsSpawnerEmpty = _enemies.Length == 0;
     }
 }
