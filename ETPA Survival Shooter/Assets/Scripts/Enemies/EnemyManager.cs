@@ -9,15 +9,13 @@ public class EnemyManager : MonoBehaviour
 {
     // Every enemy have these exposed private variables
     [SerializeField] private SphereCollider _detectionArea;
-    [SerializeField] private float _spawnTime = 3f;
 
     // Every enemy have these public properties
-    public UnityAction<EnemyTypes> OnEnemyDeath { get; private set; }
+    public UnityAction OnEnemyDeath { get; private set; }
 
     // Every enemy have these private variables
     private NavMeshAgent _agent;
     private EnemyStats _enemyStats;
-    private bool _isReady;
 
     // Every enemy have these methods
     private void Start()
@@ -30,13 +28,8 @@ public class EnemyManager : MonoBehaviour
     public void Setup(ref EnemyStats enemyStats)
     {
         _enemyStats = (EnemyStats)enemyStats.Clone();
-    }
-
-    public IEnumerator Spawn()
-    {
-
-        yield return new WaitForSeconds(_spawnTime);
-        _isReady = true;
+        gameObject.name = $"{_enemyStats.name} ID{gameObject.GetInstanceID()}";
+        GetComponent<MeshRenderer>().material = _enemyStats.material;
     }
 
     public void TakeDamage(int damage)
@@ -49,7 +42,7 @@ public class EnemyManager : MonoBehaviour
     }
     private void Die()
     {
-        OnEnemyDeath?.Invoke(_enemyStats.type);
+        OnEnemyDeath?.Invoke();
         Destroy(gameObject);
     }
 }

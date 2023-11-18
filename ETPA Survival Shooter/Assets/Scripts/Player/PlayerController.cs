@@ -8,19 +8,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] InputActionReference _runAction;
 
     [Header("Specs")]
-    [SerializeField] CharacterSpecs _characterSpecs;
+    [SerializeField] float _speed = 6f;
 
     // Components references
     private CharacterController _characterController;
     private Animator _animator;
 
     // Properties
-    public CharacterSpecs CharacterSpecs {  
-        get { return _characterSpecs; }  
-        private set {
-            CharacterSpecs = _characterSpecs;    
-        } 
-    }
     public Vector2 MoveInput { get; private set; }
     public bool RunInput { get; private set; }
     public Vector2 TargetInput { get; private set; }
@@ -91,7 +85,7 @@ public class PlayerController : MonoBehaviour
     public void Walk()
     {
         Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
-        movement *= CharacterSpecs.walkSpeed;
+        movement *= _speed;
 
         movement = Quaternion.Euler(0, -45, 0) * movement;
 
@@ -105,7 +99,7 @@ public class PlayerController : MonoBehaviour
     public void Run() { 
         Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
         movement.Normalize();
-        movement *= CharacterSpecs.runSpeed;
+        movement *= _speed;
 
         movement = Quaternion.Euler(0, -45, 0) * movement;
 
