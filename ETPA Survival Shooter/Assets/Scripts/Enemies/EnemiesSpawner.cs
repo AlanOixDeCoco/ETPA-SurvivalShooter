@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EnemiesSpawner : MonoBehaviour
@@ -9,36 +10,32 @@ public class EnemiesSpawner : MonoBehaviour
     [SerializeField] private EnemyStatsSO[] _enemiesBaseStats;
 
     [SerializeField] private Transform _enemiesContainer;
-    [SerializeField] private Transform _newEnemyHolder;
+    [SerializeField] private Transform _enemySpawnPoint;
+
+    [SerializeField] private Transform _enemiesTarget;
 
     // Number of enemies stored per wave
     private int _spawnerSize = 10;
     // Enemies stored
-    private List<GameObject> _enemies;
-
-    private GameObject _newEnemy;
+    private List<GameObject> _enemiesToSpawn;
 
     private void Start()
     {
         FillSpawner();
-
-        StartCoroutine(SpawnEvery5sec());
     }
+
+    float timer = 0;
 
     private void Update()
     {
-        if (IsSpawnerEmpty)
+        if (!IsSpawnerEmpty)
         {
-            Debug.Log("Spawned every enemy!");
-            StopAllCoroutines();
-        }
-    }
-
-    private IEnumerator SpawnEvery5sec()
-    {
-        while (true) { 
-            SpawnEnemy();
-            yield return new WaitForSeconds(5);
+            if (timer > 5f)
+            {
+                SpawnEnemy(1f);
+                timer = 0;
+            }
+            timer += Time.deltaTime;
         }
     }
 
@@ -52,33 +49,42 @@ public class EnemiesSpawner : MonoBehaviour
 
     public void FillSpawner()
     {
-        _enemies = new List<GameObject>();
+        _enemiesToSpawn = new List<GameObject>();
         for (int i = 0; i < _spawnerSize; i++)
         {
             int randomStatIndex = Random.Range(0, _enemiesBaseStats.Length);
             GameObject newEnemy = Instantiate(_enemyBasePrefab, _enemiesContainer);
             newEnemy.SetActive(false);
             EnemyManager newEnemyManager = newEnemy.GetComponent<EnemyManager>();
-            newEnemyManager.Setup(ref _enemiesBaseStats[randomStatIndex].enemyStats);
-            newEnemyManager.enabled = false;
-            _enemies.Add(newEnemy);
+            newEnemyManager.Setup(ref _enemiesBaseStats[randomStatIndex].enemyStats, ref _enemiesTarget);
+            _enemiesToSpawn.Add(newEnemy);
         }
 
         IsSpawnerEmpty = false;
     }
 
-    private void SpawnEnemy()
+    private async void SpawnEnemy(float spawnDuration)
     {
-        _newEnemy = _enemies.Last();
-        _newEnemy.transform.parent = _newEnemyHolder;
-        _newEnemy.SetActive(true);
+        // Move enemy using linear interpolation
+        var newEnemy = _enemiesToSpawn[0];
+        newEnemy.SetActive(true);
 
-        _newEnemy.transform.position += Vector3.right * 4;
+        float startTime = Time.time;
+        float lerpFactor = 0;
+        Vector3 startPos = newEnemy.transform.position;
+        Vector3 targetPos = _enemySpawnPoint.position;
+        targetPos.y = startPos.y;
+        while (lerpFactor < 1)
+        {
+            float t = Time.time - startTime;
+            lerpFactor = Mathf.Clamp(t / spawnDuration, 0, 1);
+            newEnemy.transform.position = Vector3.Lerp(startPos, targetPos, lerpFactor);
+            await Task.Yield();
+        }
 
-        _newEnemy.transform.parent = _enemiesContainer;
-        _enemies.Remove(_newEnemy);
-        _newEnemy = null;
+        newEnemy.GetComponent<EnemyManager>().enabled = true;
+        _enemiesToSpawn.Remove(newEnemy);
 
-        IsSpawnerEmpty = (_enemies.Count == 0);
+        IsSpawnerEmpty = (_enemiesToSpawn.Count == 0);
     }
 }

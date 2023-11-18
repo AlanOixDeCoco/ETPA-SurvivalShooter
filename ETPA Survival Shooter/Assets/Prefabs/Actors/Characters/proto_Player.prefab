@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 8624303584613456988}
   - component: {fileID: 6794877142953953933}
   - component: {fileID: 3812085836647789731}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: proto_Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4a980518f9a968145a1e1ccad38b766c, type: 2}
+  - {fileID: 2100000, guid: b9ba1eccc0408e5409724ee574a0160a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,4 +127,4 @@ MonoBehaviour:
     type: 3}
   _runAction: {fileID: 2990867473595843278, guid: f9c9d843c7d2e3d4aaf69315350e0018,
     type: 3}
-  _characterSpecs: {fileID: 11400000, guid: e38815491a37cca4587b4edadcb522cb, type: 2}
+  _speed: 6

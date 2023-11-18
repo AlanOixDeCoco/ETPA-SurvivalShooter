@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 412a28d954c67e741a890b471ca7d7bb, type: 3}
-  m_Name: RedEnemyStats
+  m_Name: DarkDummyStats
   m_EditorClassIdentifier: 
   enemyStats:
-    name: Red
-    material: {fileID: 2100000, guid: 981729aeb28b267428fe69fa380cc17e, type: 2}
+    name: Dark Dummy
+    material: {fileID: 2100000, guid: 92b9c139db158ba4eb7c25ed767df133, type: 2}
     scale: 1.5
-    detectionRadius: 3
-    followRadius: 4
+    detectionRadius: 5
+    followRadius: 10
     health: 60
-    speed: 1.5
+    speed: 2
     damage: 40
     lootProbability: 0
     loot: []

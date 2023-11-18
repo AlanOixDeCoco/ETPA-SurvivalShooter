@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 412a28d954c67e741a890b471ca7d7bb, type: 3}
-  m_Name: BlueEnemyStats
+  m_Name: AgressiveDummyStats
   m_EditorClassIdentifier: 
   enemyStats:
-    name: Blue
-    material: {fileID: 2100000, guid: ef8b906bb1f7def4c904d4b6ebde839d, type: 2}
+    name: Agressive Dummy
+    material: {fileID: 2100000, guid: 137ba7cb0d171d24eb2287cf19bc6b03, type: 2}
     scale: 1
-    detectionRadius: 2
-    followRadius: 3
-    health: 20
-    speed: 2
+    detectionRadius: 10
+    followRadius: 15
+    health: 30
+    speed: 4
     damage: 20
     lootProbability: 0
     loot: []
