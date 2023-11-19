@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -15,56 +16,88 @@ public class EnemyManager : MonoBehaviour
 
     // Public properties
     public UnityAction OnEnemyDeath { get; private set; }
+    public NavMeshAgent Agent { get; private set; }
+    public EnemyStats EnemyStats { get; private set; }
+    public Transform PrimaryTarget { get; private set; } = null;
+    public Transform Target { get; private set; } = null;
 
     // Private variables
-    private NavMeshAgent _agent;
-    private EnemyStats _enemyStats;
-
-    private Transform _primaryTarget;
-    private Transform _target = null;
+    private bool _isActive = false;
+    private StateMachine _stateMachine;
 
     // Unity methods
+    private void Awake()
+    {
+        Agent = GetComponent<NavMeshAgent>();
+
+        // Create statemachine
+        _stateMachine = new StateMachine();
+
+        // Create states
+        var inactiveState = new EnemyInactiveState(this);
+        var movingState = new EnemyMovingState(this);
+
+        // Inactive --> Moving
+        _stateMachine.AddTransition(inactiveState, movingState, () =>
+        {
+            return _isActive;
+        });
+
+        // Moving --> Inactive
+        _stateMachine.AddTransition(movingState, inactiveState, () =>
+        {
+            return !_isActive;
+        });
+
+        // Moving --> Attacking
+        
+
+        // Attacking --> Moving
+        
+
+        // Set the entry state
+        _stateMachine.SetState(inactiveState);
+    }
+
     private async void OnEnable()
     {
-        _agent.enabled = true;
-
         float startTime = Time.time;
         float lerpFactor = 0;
         float scaleDuration = 1f;
-        while (transform.localScale.x < _enemyStats.scale)
+        while (transform.localScale.x < EnemyStats.scale)
         {
             float t = Time.time - startTime;
             lerpFactor = Mathf.Clamp(t / scaleDuration, 0, 1);
-            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * _enemyStats.scale, lerpFactor);
+            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * EnemyStats.scale, lerpFactor);
             await Task.Yield();
         }
+
+        _isActive = true;
     }
 
     private void Update()
     {
-        if(_target != null) _agent.destination = _target.position;
-        else _agent.destination = _primaryTarget.position;
+        _stateMachine.Tick();
     }
 
     // Class methods
     public void Setup(ref EnemyStats enemyStats, ref Transform target)
     {
-        _agent = GetComponent<NavMeshAgent>();
-        _enemyStats = (EnemyStats)enemyStats.Clone();
-        _primaryTarget = target;
-        _detectionArea.radius = _enemyStats.detectionRadius;
-        _agent.speed = _enemyStats.speed;
-        gameObject.name = $"{_enemyStats.name}";
+        EnemyStats = (EnemyStats)enemyStats.Clone();
+        PrimaryTarget = target;
+        _detectionArea.radius = EnemyStats.detectionRadius;
+        Agent.speed = EnemyStats.speed;
+        gameObject.name = $"{EnemyStats.name}";
         foreach(var mesh in _enemyMeshes)
         {
-            mesh.material = _enemyStats.material;
+            mesh.material = EnemyStats.material;
         }
     }
 
     public void TakeDamage(int damage)
     {
-        _enemyStats.health -= damage;
-        if(_enemyStats.health <= 0)
+        EnemyStats.health -= damage;
+        if(EnemyStats.health <= 0)
         {
             Die();
         }
@@ -75,21 +108,21 @@ public class EnemyManager : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void SetTarget(Transform target)
+    public void SetTarget(Transform target)
     {
-        _target = target;
-        _detectionArea.radius = _enemyStats.followRadius / _enemyStats.scale;
+        Target = target;
+        _detectionArea.radius = EnemyStats.followRadius / EnemyStats.scale;
         _detectionUI.gameObject.SetActive(true);
     }
 
-    private void LooseTarget()
+    public void LooseTarget()
     {
-        _target = null;
-        _detectionArea.radius = _enemyStats.detectionRadius / _enemyStats.scale;
+        Target = PrimaryTarget;
+        _detectionArea.radius = EnemyStats.detectionRadius / EnemyStats.scale;
         _detectionUI.gameObject.SetActive(false);
     }
 
-    // Collision events
+    // Trigger events
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -99,7 +132,7 @@ public class EnemyManager : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform == _target)
+        if (other.transform == Target)
         {
             LooseTarget();
         }

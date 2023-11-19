@@ -11,14 +11,13 @@ public class EnemyStats : ICloneable
     public Material material;
     public float scale = 1f;
 
-    [Header("Detection")]
+    [Header("Caracteristics")]
     [Tooltip("The detection sphere radius, in meters")] public float detectionRadius;
     [Tooltip("The detection sphere radius, when detected, in meters")] public float followRadius;
-
-    [Header("Caracteristics")]
     public int health;
     public float speed;
     public float damage;
+    public int difficulty;
 
     [Header("Loot")]
     [Range(0f, 1f)] public float lootProbability;

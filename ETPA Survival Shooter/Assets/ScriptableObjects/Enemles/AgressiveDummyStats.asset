@@ -21,5 +21,6 @@ MonoBehaviour:
     health: 30
     speed: 4
     damage: 20
+    difficulty: 2
     lootProbability: 0
     loot: []
