@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _standbyTime;
 
     [Header("Enemies settings")]
+    [SerializeField] private List<EnemiesSpawner> _activeSpawners;
     [SerializeField] private GameObject _enemyBasePrefab;
     [SerializeField] private Transform _enemiesContainer;
     [SerializeField] private Transform _enemiesPrimaryTarget;
@@ -62,15 +63,16 @@ public class GameManager : MonoBehaviour
     // Public / private set properties
     public GameStats GameStats { get; private set; } = new GameStats();
     public bool RequestNextWave { get; private set; } = false;
-    public float StandbyTime {get => _standbyTime; private set => _standbyTime = value; }
-    public int DifficultyPeriod { get => _difficultyPeriod; private set => _difficultyPeriod = value; }
-    public int StartDifficulty { get => _startDifficulty; private set => _startDifficulty = value; }
-    public List<EnemyUnlock> EnemiesUnlocks { get => _enemiesUnlocks; private set => _enemiesUnlocks = value; }
-    public AnimationCurve DifficultyCurve { get => _difficultyCurve; private set => _difficultyCurve = value; }
-    public GameObject EnemyBasePrefab { get => _enemyBasePrefab; private set => _enemyBasePrefab = value; }
-    public Transform EnemiesPrimaryTarget { get => _enemiesPrimaryTarget; private set => _enemiesPrimaryTarget = value; }
-    public Transform EnemiesContainer { get => _enemiesContainer; private set => _enemiesContainer = value; }
-    public AnimationCurve SpawnRateCurve { get => _spawnRateCurve; private set => _spawnRateCurve = value; }
+    public float StandbyTime {get => _standbyTime; }
+    public int DifficultyPeriod { get => _difficultyPeriod; }
+    public int StartDifficulty { get => _startDifficulty; }
+    public List<EnemyUnlock> EnemiesUnlocks { get => _enemiesUnlocks; }
+    public AnimationCurve DifficultyCurve { get => _difficultyCurve; }
+    public GameObject EnemyBasePrefab { get => _enemyBasePrefab; }
+    public Transform EnemiesPrimaryTarget { get => _enemiesPrimaryTarget; }
+    public Transform EnemiesContainer { get => _enemiesContainer; }
+    public AnimationCurve SpawnRateCurve { get => _spawnRateCurve; }
+    public List<EnemiesSpawner> ActiveSpawners { get => _activeSpawners; }
 
     // Private variables
     private StateMachine _stateMachine;

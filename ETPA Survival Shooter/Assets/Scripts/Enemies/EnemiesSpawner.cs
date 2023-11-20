@@ -7,7 +7,8 @@ using UnityEngine;
 public class EnemiesSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _enemyBasePrefab;
-    [SerializeField] private Transform _enemySpawnPoint;
+    [SerializeField] private Transform _enemySpawnStart;
+    [SerializeField] private Transform _enemySpawnDestination;
     [SerializeField] private float _spawnDuration = 1f;
 
     public async Task SpawnEnemy(GameObject newEnemy)
@@ -17,14 +18,13 @@ public class EnemiesSpawner : MonoBehaviour
 
         float startTime = Time.time;
         float lerpFactor = 0;
-        Vector3 startPos = newEnemy.transform.position;
-        Vector3 targetPos = _enemySpawnPoint.position;
-        targetPos.y = startPos.y;
+        newEnemy.transform.position = _enemySpawnStart.position;
+        newEnemy.transform.LookAt(_enemySpawnDestination.position);
         while (lerpFactor < 1)
         {
             float t = Time.time - startTime;
             lerpFactor = Mathf.Clamp(t / _spawnDuration, 0, 1);
-            newEnemy.transform.position = Vector3.Lerp(startPos, targetPos, lerpFactor);
+            newEnemy.transform.position = Vector3.Lerp(_enemySpawnStart.position, _enemySpawnDestination.position, lerpFactor);
             await Task.Yield();
         }
 

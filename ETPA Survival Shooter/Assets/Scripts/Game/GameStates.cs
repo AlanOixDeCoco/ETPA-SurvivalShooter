@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class StandbyGameState : IState
@@ -38,6 +40,9 @@ public class WaveGameState : IState
     private GameManager _gameManager;
     private float _waveStartTime;
     private Wave _wave;
+    private List<GameObject> _inactiveEnemies;
+    private float _nextSpawnTime;
+    private float _currentSpawnRate;
 
     public WaveGameState(GameManager gameManager)
     {
@@ -53,13 +58,14 @@ public class WaveGameState : IState
         _wave = GetNewWave();
 
         // Instantiate enemies accordingly
-        InstanciateEnemies();
+        _inactiveEnemies = InstanciateEnemies();
 
         // Start timer at the end of the generation
         _waveStartTime = Time.time;
 
-        // Start every spawn
-        
+        // Set the first enemy spawn time
+        _currentSpawnRate = _gameManager.SpawnRateCurve.Evaluate(_gameManager.GameStats.waves);
+        _nextSpawnTime = Time.time + _currentSpawnRate;
     }
 
     public void OnExit()
@@ -70,7 +76,18 @@ public class WaveGameState : IState
 
     public void Tick()
     {
-        return;
+        // If there are no enemies left
+        if(_gameManager.EnemiesContainer.childCount == 0) _gameManager.StartNextWave();
+
+        if ((Time.time >= _nextSpawnTime) && (_inactiveEnemies.Count > 0))
+        {
+            // Spawn next enemy
+            int randomSpawnerIndex = Random.Range(0, _gameManager.ActiveSpawners.Count);
+            var inactiveEnemy = _inactiveEnemies.First();
+            Task enemySpawn = _gameManager.ActiveSpawners[randomSpawnerIndex].SpawnEnemy(inactiveEnemy);
+            _inactiveEnemies.Remove(inactiveEnemy);
+            _nextSpawnTime = Time.time + _currentSpawnRate;
+        }
     }
 
     private Wave GetNewWave()
@@ -100,15 +117,16 @@ public class WaveGameState : IState
         return difficulty;
     }
 
-    private void InstanciateEnemies()
+    private List<GameObject> InstanciateEnemies()
     {
-        var enemiesToSpawn = new List<GameObject>();
+        var enemiesGO = new List<GameObject>();
         foreach(var enemyStats in _wave.EnemiesStats)
         {
             var newEnemy = GameObject.Instantiate(_gameManager.EnemyBasePrefab, _gameManager.EnemiesContainer);
             newEnemy.SetActive(false);
             newEnemy.GetComponent<EnemyManager>().Setup(enemyStats, _gameManager.EnemiesPrimaryTarget);
-            enemiesToSpawn.Add(newEnemy);
+            enemiesGO.Add(newEnemy);
         }
+        return enemiesGO;
     }
 }
