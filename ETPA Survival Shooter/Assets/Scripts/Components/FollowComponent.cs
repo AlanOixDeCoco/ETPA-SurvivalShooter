@@ -8,7 +8,7 @@ public class FollowComponent : MonoBehaviour
     [SerializeField] private Transform _target;
 
     [Header("Parameters")]
-    [Range(0.001f, 1f)] [SerializeField] private float _speed;
+    [Range(1f, 10f)] [SerializeField] private float _speed;
 
     private Vector3 _offset;
 
@@ -20,6 +20,6 @@ public class FollowComponent : MonoBehaviour
     private void LateUpdate()
     {
         Vector3 destination = _target.position - _offset;
-        transform.position = Vector3.Lerp(transform.position, destination, _speed);
+        transform.position = Vector3.Lerp(transform.position, destination, _speed * Time.deltaTime);
     }
 }

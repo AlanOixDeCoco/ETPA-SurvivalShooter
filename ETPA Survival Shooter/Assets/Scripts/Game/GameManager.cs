@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Wave
 {
@@ -19,22 +20,6 @@ public class Wave
 
             EnemiesStats.Add(newEnemyStats);
         }
-
-        //public void FillSpawner()
-        //{
-        //    _enemiesToSpawn = new List<GameObject>();
-        //    for (int i = 0; i < _spawnerSize; i++)
-        //    {
-        //        int randomStatIndex = Random.Range(0, _enemiesBaseStats.Length);
-        //        GameObject newEnemy = Instantiate(_enemyBasePrefab, _enemiesContainer);
-        //        newEnemy.SetActive(false);
-        //        EnemyManager newEnemyManager = newEnemy.GetComponent<EnemyManager>();
-        //        newEnemyManager.Setup(ref _enemiesBaseStats[randomStatIndex].enemyStats, ref _enemiesTarget);
-        //        _enemiesToSpawn.Add(newEnemy);
-        //    }
-
-        //    IsSpawnerEmpty = false;
-        //}
     }
 }
 
@@ -57,8 +42,9 @@ public class GameManager : MonoBehaviour
 {
     [Header("Waves settings")]
     [SerializeField] private AnimationCurve _difficultyCurve;
+    [SerializeField] private AnimationCurve _spawnRateCurve;
     [SerializeField] private int _difficultyPeriod = 10;
-    [SerializeField] private float _startDifficulty = 10;
+    [SerializeField] private int _startDifficulty = 10;
     [SerializeField] private List<EnemyUnlock> _enemiesUnlocks = new List<EnemyUnlock>();
 
     [Header("Standby settings")]
@@ -69,10 +55,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _enemiesContainer;
     [SerializeField] private Transform _enemiesPrimaryTarget;
 
-    // Public properties
+    [Header("Events")]
+    public UnityEvent _onWaveStart;
+    public UnityEvent _onWaveEnd;
+
+    // Public / private set properties
     public GameStats GameStats { get; private set; } = new GameStats();
     public bool RequestNextWave { get; private set; } = false;
-    public float StandbyTime {get { return _standbyTime; } private set { _standbyTime = value; } }
+    public float StandbyTime {get => _standbyTime; private set => _standbyTime = value; }
+    public int DifficultyPeriod { get => _difficultyPeriod; private set => _difficultyPeriod = value; }
+    public int StartDifficulty { get => _startDifficulty; private set => _startDifficulty = value; }
+    public List<EnemyUnlock> EnemiesUnlocks { get => _enemiesUnlocks; private set => _enemiesUnlocks = value; }
+    public AnimationCurve DifficultyCurve { get => _difficultyCurve; private set => _difficultyCurve = value; }
+    public GameObject EnemyBasePrefab { get => _enemyBasePrefab; private set => _enemyBasePrefab = value; }
+    public Transform EnemiesPrimaryTarget { get => _enemiesPrimaryTarget; private set => _enemiesPrimaryTarget = value; }
+    public Transform EnemiesContainer { get => _enemiesContainer; private set => _enemiesContainer = value; }
+    public AnimationCurve SpawnRateCurve { get => _spawnRateCurve; private set => _spawnRateCurve = value; }
 
     // Private variables
     private StateMachine _stateMachine;
@@ -100,7 +98,7 @@ public class GameManager : MonoBehaviour
         // Wave --> Standby
         _stateMachine.AddTransition(waveGameState, standbyGameState, () =>
         {
-            return true;
+            return _enemiesContainer.childCount <= 0;
         });
 
         // Set the entry state

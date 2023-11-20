@@ -7,19 +7,10 @@ using UnityEngine;
 public class EnemiesSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _enemyBasePrefab;
-
     [SerializeField] private Transform _enemySpawnPoint;
-
     [SerializeField] private float _spawnDuration = 1f;
 
-    // Number of enemies stored per wave
-    private int _spawnerSize = 10;
-    // Enemies stored
-    private List<GameObject> _enemiesToSpawn;
-
-    public bool IsSpawnerEmpty { get; private set; } = true;
-
-    private async Task SpawnEnemy(GameObject newEnemy)
+    public async Task SpawnEnemy(GameObject newEnemy)
     {
         // Move enemy using linear interpolation
         newEnemy.SetActive(true);

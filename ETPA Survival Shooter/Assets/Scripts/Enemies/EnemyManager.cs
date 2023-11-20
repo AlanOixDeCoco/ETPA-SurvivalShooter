@@ -81,7 +81,7 @@ public class EnemyManager : MonoBehaviour
     }
 
     // Class methods
-    public void Setup(ref EnemyStats enemyStats, ref Transform target)
+    public void Setup(EnemyStats enemyStats, Transform target)
     {
         EnemyStats = (EnemyStats)enemyStats.Clone();
         PrimaryTarget = target;
