@@ -5,19 +5,24 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Inputs")]
     [SerializeField] InputActionReference _moveAction;
-    [SerializeField] InputActionReference _runAction;
+    [SerializeField] InputActionReference _shootAction;
 
     [Header("Specs")]
-    [SerializeField] float _speed = 6f;
+    [SerializeField] float _walkSpeed = 4f;
+    [SerializeField] float _runSpeed = 6f;
+
+    [Header("Weapon")]
+    [SerializeField] WeaponController _weaponController;
 
     // Components references
     private CharacterController _characterController;
     private Animator _animator;
 
     // Properties
-    public Vector2 MoveInput { get; private set; }
-    public bool RunInput { get; private set; }
-    public Vector2 TargetInput { get; private set; }
+    public Vector2 MoveInput { get; private set; } = Vector2.zero;
+    public Vector2 TargetInput { get; private set; } = Vector2.up;
+    public bool ShootInput { get; private set; } = false;
+    public WeaponController WeaponController { get => _weaponController; private set => _weaponController = value; }
 
     // Variables
     private StateMachine _stateMachine;
@@ -29,8 +34,8 @@ public class PlayerController : MonoBehaviour
         _moveAction.action.canceled += (callback) => MoveInput = Vector2.zero;
 
         // Run action
-        _runAction.action.started += (callback) => RunInput = true;
-        _runAction.action.canceled += (callback) => RunInput = false;
+        _shootAction.action.started += (callback) => ShootInput = true;
+        _shootAction.action.canceled += (callback) => ShootInput = false;
 
         // Enable asset
         _moveAction.asset.Enable();
@@ -46,31 +51,37 @@ public class PlayerController : MonoBehaviour
 
         // Create states
         var idleState = new PlayerIdleState();
-        var walkState = new PlayerWalkState(this);
-        var runState = new PlayerRunState(this);
+        var movingState = new PlayerMovingState(this);
+        var shootingState = new PlayerShootingState(this);
 
-        // Idle --> Walk
-        _stateMachine.AddTransition(idleState, walkState, () =>
+        // Idle --> Moving
+        _stateMachine.AddTransition(idleState, movingState, () =>
         {
             return MoveInput.magnitude != 0;
         });
 
-        // Walk --> Idle
-        _stateMachine.AddTransition(walkState, idleState, () =>
+        // Moving --> Idle
+        _stateMachine.AddTransition(movingState, idleState, () =>
         {
             return MoveInput.magnitude == 0;
         });
 
-        // Walk --> Run
-        _stateMachine.AddTransition(walkState, runState, () =>
+        // Any --> Shooting
+        _stateMachine.AddAnyTransition(shootingState, () =>
         {
-            return RunInput;
+            return ShootInput;
         });
 
-        // Run --> Walk
-        _stateMachine.AddTransition(runState, walkState, () =>
+        // Shooting --> Moving
+        _stateMachine.AddTransition(shootingState, movingState, () =>
         {
-            return !RunInput;
+            return _weaponController.CanShoot && MoveInput.magnitude != 0;
+        });
+
+        // Shooting --> Idle
+        _stateMachine.AddTransition(shootingState, idleState, () =>
+        {
+            return _weaponController.CanShoot && MoveInput.magnitude == 0;
         });
 
         // Set the entry state
@@ -85,7 +96,7 @@ public class PlayerController : MonoBehaviour
     public void Walk()
     {
         Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
-        movement *= _speed;
+        movement *= _walkSpeed;
 
         movement = Quaternion.Euler(0, -45, 0) * movement;
 
@@ -96,10 +107,10 @@ public class PlayerController : MonoBehaviour
         _characterController.SimpleMove(movement);
     }
 
-    public void Run() { 
+    public void Run()
+    {
         Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
-        movement.Normalize();
-        movement *= _speed;
+        movement *= _runSpeed;
 
         movement = Quaternion.Euler(0, -45, 0) * movement;
 

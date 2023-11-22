@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Run",
+                    "name": "Shoot",
                     "type": "Button",
                     "id": "84ba91e8-936e-4af3-8a2d-9754756c0c95",
                     "expectedControlType": "Button",
@@ -136,22 +136,33 @@
                 {
                     "name": "",
                     "id": "d6b2be60-6933-4fea-af98-5f9eda4499af",
-                    "path": "<Keyboard>/leftShift",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Run",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "31e69506-a2f5-4c82-a33b-0a029cc7e9dd",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Run",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8f7e4b7-d2be-4512-b26c-0e93c450fa71",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

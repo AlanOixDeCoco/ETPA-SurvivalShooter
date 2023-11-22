@@ -20,36 +20,11 @@ public class PlayerIdleState : IState
     }
 }
 
-public class PlayerWalkState : IState
+public class PlayerMovingState : IState
 {
     private PlayerController _playerController;
 
-    public PlayerWalkState(PlayerController playerController)
-    {
-        _playerController = playerController;
-    }
-
-    public void OnEnter()
-    {
-        return;
-    }
-
-    public void OnExit()
-    {
-        return;
-    }
-
-    public void Tick()
-    {
-        _playerController.Walk();
-    }
-}
-
-public class PlayerRunState : IState
-{
-    private PlayerController _playerController;
-
-    public PlayerRunState(PlayerController playerController)
+    public PlayerMovingState(PlayerController playerController)
     {
         _playerController = playerController;
     }
@@ -67,5 +42,31 @@ public class PlayerRunState : IState
     public void Tick()
     {
         _playerController.Run();
+    }
+}
+
+public class PlayerShootingState : IState
+{
+    private PlayerController _playerController;
+
+    public PlayerShootingState(PlayerController playerController)
+    {
+        _playerController = playerController;
+    }
+
+    public void OnEnter()
+    {
+        _playerController.WeaponController.Shooting = true;
+    }
+
+    public void OnExit()
+    {
+        _playerController.WeaponController.Shooting = false;
+    }
+
+    public void Tick()
+    {
+        _playerController.Walk();
+        _playerController.WeaponController.Shooting = _playerController.ShootInput;
     }
 }

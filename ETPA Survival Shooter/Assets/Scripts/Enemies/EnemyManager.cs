@@ -62,12 +62,11 @@ public class EnemyManager : MonoBehaviour
     private async void OnEnable()
     {
         float startTime = Time.time;
-        float lerpFactor = 0;
         float scaleDuration = 1f;
         while (transform.localScale.x < EnemyStats.scale)
         {
             float t = Time.time - startTime;
-            lerpFactor = Mathf.Clamp(t / scaleDuration, 0, 1);
+            float lerpFactor = Mathf.Clamp(t / scaleDuration, 0, 1);
             transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * EnemyStats.scale, lerpFactor);
             await Task.Yield();
         }
@@ -88,21 +87,13 @@ public class EnemyManager : MonoBehaviour
         _detectionArea.radius = EnemyStats.detectionRadius;
         Agent.speed = EnemyStats.speed;
         gameObject.name = $"{EnemyStats.name}";
+        GetComponent<HealthComponent>().SetHealth(enemyStats.health);
         foreach(var mesh in _enemyMeshes)
         {
             mesh.material = EnemyStats.material;
         }
     }
-
-    public void TakeDamage(int damage)
-    {
-        EnemyStats.health -= damage;
-        if(EnemyStats.health <= 0)
-        {
-            Die();
-        }
-    }
-    private void Die()
+    public void Die()
     {
         OnEnemyDeath?.Invoke();
         Destroy(gameObject);
