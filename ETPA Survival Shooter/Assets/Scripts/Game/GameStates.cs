@@ -18,12 +18,12 @@ public class StandbyGameState : IState
     {
         Debug.Log("Entering standby state!");
         _endStandbyTime = Time.time + _gameManager.StandbyTime;
-        _gameManager._onWaveStart?.Invoke();
     }
 
     public void OnExit()
     {
-        return;
+        _gameManager.GameStats.waves++;
+        _gameManager._onWaveStart?.Invoke(_gameManager.GameStats.waves);
     }
 
     public void Tick()
@@ -43,6 +43,7 @@ public class WaveGameState : IState
     private List<GameObject> _inactiveEnemies;
     private float _nextSpawnTime;
     private float _currentSpawnRate;
+    private Task _instantiateEnemies;
 
     public WaveGameState(GameManager gameManager)
     {
@@ -51,14 +52,11 @@ public class WaveGameState : IState
 
     public void OnEnter()
     {
-        _gameManager.GameStats.waves++;
-        Debug.Log($"Starting wave {_gameManager.GameStats.waves}");
-
         // Create a new wave object based on the game progression
         _wave = GetNewWave();
 
         // Instantiate enemies accordingly
-        _inactiveEnemies = InstanciateEnemies();
+        _instantiateEnemies = InstanciateEnemies();
 
         // Start timer at the end of the generation
         _waveStartTime = Time.time;
@@ -76,6 +74,8 @@ public class WaveGameState : IState
 
     public void Tick()
     {
+
+
         // If there are no enemies left
         if(_gameManager.EnemiesContainer.childCount == 0) _gameManager.StartNextWave();
 
@@ -117,7 +117,7 @@ public class WaveGameState : IState
         return difficulty;
     }
 
-    private List<GameObject> InstanciateEnemies()
+    private async Task InstanciateEnemies()
     {
         var enemiesGO = new List<GameObject>();
         foreach(var enemyStats in _wave.EnemiesStats)
@@ -127,6 +127,6 @@ public class WaveGameState : IState
             newEnemy.GetComponent<EnemyManager>().Setup(enemyStats, _gameManager.EnemiesPrimaryTarget);
             enemiesGO.Add(newEnemy);
         }
-        return enemiesGO;
+        _inactiveEnemies = enemiesGO;
     }
 }

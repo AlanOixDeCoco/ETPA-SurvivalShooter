@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _enemiesPrimaryTarget;
 
     [Header("Events")]
-    public UnityEvent _onWaveStart;
+    public UnityEvent<int> _onWaveStart;
     public UnityEvent _onWaveEnd;
 
     // Public / private set properties

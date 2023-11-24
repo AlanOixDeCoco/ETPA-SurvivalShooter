@@ -3,26 +3,38 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Transform _movementLookTarget;
+    [SerializeField] private Transform _aimLookTarget;
+    [SerializeField] private Transform _mesh;
+
     [Header("Inputs")]
-    [SerializeField] InputActionReference _moveAction;
-    [SerializeField] InputActionReference _shootAction;
+    [SerializeField] private InputActionReference _moveAction;
+    [SerializeField] private InputActionReference _shootAction;
+    [SerializeField] private InputActionReference _reloadAction;
+    [SerializeField] private LayerMask _mouseColliderLayer;
 
     [Header("Specs")]
-    [SerializeField] float _walkSpeed = 4f;
-    [SerializeField] float _runSpeed = 6f;
+    [SerializeField] private float _walkSpeed = 4f;
+    [SerializeField] private float _runSpeed = 6f;
 
     [Header("Weapon")]
-    [SerializeField] WeaponController _weaponController;
+    [SerializeField] private WeaponController _weaponController;
 
     // Components references
     private CharacterController _characterController;
-    private Animator _animator;
+    private Animator _meshAnimator;
+    private Camera _playerCamera;
 
     // Properties
     public Vector2 MoveInput { get; private set; } = Vector2.zero;
     public Vector2 TargetInput { get; private set; } = Vector2.up;
     public bool ShootInput { get; private set; } = false;
     public WeaponController WeaponController { get => _weaponController; private set => _weaponController = value; }
+    public Transform MovementLookTarget { get => _movementLookTarget; private set => _movementLookTarget = value; }
+    public Transform AimLookTarget { get => _aimLookTarget; private set => _aimLookTarget = value; }
+    public Transform Mesh { get => _mesh; private set => _mesh = value; }
+    public Animator MeshAnimator { get => _meshAnimator; private set => _meshAnimator = value; }
 
     // Variables
     private StateMachine _stateMachine;
@@ -33,9 +45,12 @@ public class PlayerController : MonoBehaviour
         _moveAction.action.performed += (callback) => MoveInput = callback.ReadValue<Vector2>();
         _moveAction.action.canceled += (callback) => MoveInput = Vector2.zero;
 
-        // Run action
+        // Shoot action
         _shootAction.action.started += (callback) => ShootInput = true;
         _shootAction.action.canceled += (callback) => ShootInput = false;
+
+        // Reload action
+        _reloadAction.action.started += (callback) => _weaponController.Reload();
 
         // Enable asset
         _moveAction.asset.Enable();
@@ -44,7 +59,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _animator = GetComponent<Animator>();
+        MeshAnimator = Mesh.GetComponent<Animator>();
 
         // Create statemachine
         _stateMachine = new StateMachine();
@@ -88,36 +103,47 @@ public class PlayerController : MonoBehaviour
         _stateMachine.SetState(idleState);
     }
 
+    private void Start()
+    {
+        _playerCamera = Camera.main;
+    }
+
     private void Update()
     {
         _stateMachine.Tick();
+
+        // Edit aim target
+        RaycastHit hit = new RaycastHit();
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 100, _mouseColliderLayer))
+        {
+            Vector3 hitPoint = hit.point;
+            //hitPoint.y = _movementLookTarget.position.y;
+            _aimLookTarget.position = hitPoint;
+        }
+    }
+
+    private void Move(float speed)
+    {
+        Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
+        movement *= speed;
+
+        movement = Quaternion.Euler(0, -45, 0) * movement;
+
+        // Edit movement target
+        _movementLookTarget.position = transform.position + movement;
+
+        // Apply movement
+        _characterController.SimpleMove(movement);
     }
 
     public void Walk()
     {
-        Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
-        movement *= _walkSpeed;
-
-        movement = Quaternion.Euler(0, -45, 0) * movement;
-
-        // Rotate mesh
-        transform.LookAt(transform.position + movement);
-
-        // Apply movement
-        _characterController.SimpleMove(movement);
+        Move(_walkSpeed);
     }
 
     public void Run()
     {
-        Vector3 movement = new Vector3(MoveInput.x, 0, MoveInput.y);
-        movement *= _runSpeed;
-
-        movement = Quaternion.Euler(0, -45, 0) * movement;
-
-        // Rotate mesh
-        transform.LookAt(transform.position + movement);
-
-        // Apply movement
-        _characterController.SimpleMove(movement);
+        Move(_runSpeed);
     }
 }

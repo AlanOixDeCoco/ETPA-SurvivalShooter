@@ -42,6 +42,16 @@ public class PlayerMovingState : IState
     public void Tick()
     {
         _playerController.Run();
+
+        // Rotate mesh
+        _playerController.Mesh.LookAt(_playerController.AimLookTarget);
+        Quaternion rotation = _playerController.Mesh.transform.rotation;
+        rotation.x = 0;
+        rotation.z = 0;
+        _playerController.Mesh.transform.rotation = rotation;
+
+        // Rotate weapon
+        _playerController.WeaponController.transform.parent.LookAt(_playerController.AimLookTarget);
     }
 }
 
@@ -67,6 +77,18 @@ public class PlayerShootingState : IState
     public void Tick()
     {
         _playerController.Walk();
+
+        // Rotate mesh
+        _playerController.Mesh.LookAt(_playerController.AimLookTarget);
+        Quaternion rotation = _playerController.Mesh.transform.rotation;
+        rotation.x = 0;
+        rotation.z = 0;
+        _playerController.Mesh.transform.rotation = rotation;
+
+        // Rotate weapon
+        _playerController.WeaponController.transform.parent.LookAt(_playerController.AimLookTarget);
+
+        // Handle shoot input
         _playerController.WeaponController.Shooting = _playerController.ShootInput;
     }
 }

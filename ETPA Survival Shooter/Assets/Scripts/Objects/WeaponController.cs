@@ -66,6 +66,8 @@ public class WeaponController : MonoBehaviour
 
     public async void Reload()
     {
+        if (_reloading) return;
+
         _reloading = true;
         _animator.speed = 1/_weaponSpecs.reloadTime;
         _animator.Play("Reload");

@@ -13,11 +13,11 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
-  - 
-  - 
-  - 
-  - 
+  - AimCollider
+  - WorldBound
+  - Wall
+  - Ground
+  - Detection
   - 
   - 
   - 
