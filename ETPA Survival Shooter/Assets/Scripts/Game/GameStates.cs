@@ -74,7 +74,7 @@ public class WaveGameState : IState
 
     public void Tick()
     {
-
+        if (!_instantiateEnemies.IsCompleted) return;
 
         // If there are no enemies left
         if(_gameManager.EnemiesContainer.childCount == 0) _gameManager.StartNextWave();
