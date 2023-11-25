@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Wave
 {
@@ -130,5 +131,10 @@ public class GameManager : MonoBehaviour
     public void SetGameover()
     {
         Gameover = true;
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
     }
 }
