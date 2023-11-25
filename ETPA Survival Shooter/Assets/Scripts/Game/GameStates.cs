@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -126,11 +125,17 @@ public class WaveGameState : IState
         {
             var newEnemy = GameObject.Instantiate(_gameManager.EnemyBasePrefab, _gameManager.EnemiesContainer);
             newEnemy.SetActive(false);
-            newEnemy.GetComponent<EnemyManager>().Setup(enemyStats, _gameManager.EnemiesPrimaryTarget);
+            newEnemy.GetComponent<EnemyManager>().Setup(enemyStats, _gameManager.EnemiesPrimaryTarget, _gameManager);
             enemiesGO.Add(newEnemy);
             await Task.Yield();
         }
         _inactiveEnemies = enemiesGO;
+
+        _gameManager.WaveEnemiesCount = enemiesGO.Count;
+        _gameManager.EnemiesAlive = enemiesGO.Count;
+        _gameManager._updateWaveRemainingEnemies?.Invoke(1f);
+        _gameManager._updateWavesCount?.Invoke(_gameManager.GameStats.waves.ToString());
+        _gameManager._updateWavesText?.Invoke("Waves: " + _gameManager.GameStats.waves.ToString());
     }
 }
 
@@ -145,11 +150,8 @@ public class GameoverGameState : IState
 
     public void OnEnter()
     {
-        Debug.Log("Entering gameover state!");
-
-        Debug.Log("Game stats:");
-        Debug.Log(_gameManager.GameStats);
-
+        System.TimeSpan timeSurvived = System.TimeSpan.FromSeconds(_gameManager.GameStats.time);
+        _gameManager._updateTimeSurvivedText?.Invoke("You survived: " + timeSurvived.TotalHours.ToString() + ":" + timeSurvived.TotalMinutes.ToString() + ":" + timeSurvived.TotalSeconds.ToString());
         _gameManager._onGameover?.Invoke();
     }
 

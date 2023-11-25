@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerIdleState : IState
 {
+    private PlayerController _playerController;
+    public PlayerIdleState(PlayerController playerController)
+    {
+        _playerController = playerController;
+    }
+
     public void OnEnter()
     {
         return;
@@ -16,7 +22,15 @@ public class PlayerIdleState : IState
 
     public void Tick()
     {
-        return;
+        // Rotate mesh
+        _playerController.Mesh.LookAt(_playerController.AimLookTarget);
+        Quaternion rotation = _playerController.Mesh.transform.rotation;
+        rotation.x = 0;
+        rotation.z = 0;
+        _playerController.Mesh.transform.rotation = rotation;
+
+        // Rotate weapon
+        _playerController.WeaponController.transform.parent.LookAt(_playerController.AimLookTarget);
     }
 }
 

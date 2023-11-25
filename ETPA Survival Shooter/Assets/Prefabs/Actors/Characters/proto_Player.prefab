@@ -1171,6 +1171,7 @@ GameObject:
   - component: {fileID: 3812085836647789731}
   - component: {fileID: 1022755983659394024}
   - component: {fileID: 611430097732358394}
+  - component: {fileID: 8147631822786441784}
   m_Layer: 3
   m_Name: proto_Player
   m_TagString: Player
@@ -1261,10 +1262,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5391e315093af994bac435bf3c263c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 0
+  _maxHealth: 100
+  _invincibleDelay: 2
+  _onHealthChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: VitalBarUI, Assembly-CSharp
+        m_MethodName: UpdateBar
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onHealthAtZero:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3812085836647789731}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: Die
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: SetGameover
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &611430097732358394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1277,10 +1318,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a3588607a40df84fa88c0f40ab56174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tag: 
   _onAttackCollision:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1022755983659394024}
+        m_TargetAssemblyTypeName: HealthComponent, Assembly-CSharp
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!136 &8147631822786441784
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4221935857884306663}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.6738257
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.223789, z: 0}
 --- !u!1 &4412501716476313884
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,7 +3021,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1320
+  m_VersionIndex: 1323
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4313,7 +4388,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1317
+  m_VersionIndex: 1320
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5294,6 +5369,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Gun_Rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044158486063918734, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
+        type: 3}
+      propertyPath: _onUpdateMagazine.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044158486063918734, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
+        type: 3}
+      propertyPath: _onUpdateMagazine.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044158486063918734, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
+        type: 3}
+      propertyPath: _onUpdateMagazine.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UpdateBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044158486063918734, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
+        type: 3}
+      propertyPath: _onUpdateMagazine.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VitalBarUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4044158486063918734, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
+        type: 3}
+      propertyPath: _onUpdateMagazine.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4259114088795114303, guid: 80a0f0fe0e0948f43b23d31c74b754f3,
         type: 3}

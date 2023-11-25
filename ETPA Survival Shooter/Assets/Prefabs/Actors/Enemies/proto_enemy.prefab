@@ -5073,6 +5073,9 @@ MonoBehaviour:
   _detectionUI: {fileID: 1404662209977579316}
   _attackParticles: {fileID: 5772602378818948423}
   _attackDistance: 4
+  _dropPrefab: {fileID: 8018174102400132, guid: 7c244262e2f1ef74889e233213848cc0,
+    type: 3}
+  _dropProbability: 0.2
 --- !u!114 &8125061764090143944
 MonoBehaviour:
   m_ObjectHideFlags: 0

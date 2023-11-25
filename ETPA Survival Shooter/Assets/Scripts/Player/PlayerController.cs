@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         _stateMachine = new StateMachine();
 
         // Create states
-        var idleState = new PlayerIdleState();
+        var idleState = new PlayerIdleState(this);
         var movingState = new PlayerMovingState(this);
         var shootingState = new PlayerShootingState(this);
 

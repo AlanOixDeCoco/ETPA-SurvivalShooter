@@ -15,6 +15,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private Transform _detectionUI;
     [SerializeField] private ParticleSystem _attackParticles;
     [SerializeField] private float _attackDistance = 4f;
+    [SerializeField] private GameObject _dropPrefab;
+    [Range(0, 1)][SerializeField] private float _dropProbability = 0.1f;
 
     // Public properties
     public UnityAction OnEnemyDeath { get; private set; }
@@ -27,6 +29,7 @@ public class EnemyManager : MonoBehaviour
     // Private variables
     private bool _isActive = false;
     private StateMachine _stateMachine;
+    private GameManager _gameManager;
 
     // Unity methods
     private void Awake()
@@ -94,8 +97,9 @@ public class EnemyManager : MonoBehaviour
     }
 
     // Class methods
-    public void Setup(EnemyStats enemyStats, Transform target)
+    public void Setup(EnemyStats enemyStats, Transform target, GameManager gameManager)
     {
+        _gameManager = gameManager;
         EnemyStats = (EnemyStats)enemyStats.Clone();
         PrimaryTarget = target;
         _detectionArea.radius = EnemyStats.detectionRadius;
@@ -111,6 +115,15 @@ public class EnemyManager : MonoBehaviour
     public void Die()
     {
         OnEnemyDeath?.Invoke();
+        _gameManager.OnEnemyDeath(EnemyStats);
+
+        float random = Random.Range(0, 1f);
+        if(random <= _dropProbability)
+        {
+            var dropObject = Instantiate(_dropPrefab);
+            dropObject.transform.position = transform.position;
+        }
+
         Destroy(gameObject);
     }
 

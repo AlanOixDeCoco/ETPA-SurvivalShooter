@@ -61,6 +61,11 @@ public class GameManager : MonoBehaviour
     public UnityEvent<int> _onWaveStart;
     public UnityEvent _onWaveEnd;
     public UnityEvent _onGameover;
+    public UnityEvent<string> _updateScoreText;
+    public UnityEvent<string> _updateWavesCount;
+    public UnityEvent<string> _updateWavesText;
+    public UnityEvent<float> _updateWaveRemainingEnemies;
+    public UnityEvent<string> _updateTimeSurvivedText;
 
     // Public / private set properties
     public GameStats GameStats { get; private set; } = new GameStats();
@@ -76,6 +81,8 @@ public class GameManager : MonoBehaviour
     public AnimationCurve SpawnRateCurve { get => _spawnRateCurve; }
     public List<EnemiesSpawner> ActiveSpawners { get => _activeSpawners; }
     public bool Gameover { get => _gameover; private set => _gameover = value; }
+    public int WaveEnemiesCount { get; set; }
+    public int EnemiesAlive { get; set; }
 
     // Private variables
     private StateMachine _stateMachine;
@@ -118,6 +125,12 @@ public class GameManager : MonoBehaviour
         _stateMachine.SetState(standbyGameState);
     }
 
+    private void Start()
+    {
+        _updateWaveRemainingEnemies?.Invoke(0f);
+        _updateScoreText?.Invoke("Score: 0");
+    }
+
     private void Update()
     {
         _stateMachine.Tick();
@@ -136,5 +149,18 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void OnEnemyDeath(EnemyStats enemyStats)
+    {
+        EnemiesAlive--;
+
+        int scoreIncrement = 0;
+        scoreIncrement += enemyStats.difficulty * 10;
+
+        GameStats.score += scoreIncrement;
+
+        _updateWaveRemainingEnemies?.Invoke((float)EnemiesAlive / (float)WaveEnemiesCount);
+        _updateScoreText?.Invoke("Score: " + GameStats.score.ToString());
     }
 }
