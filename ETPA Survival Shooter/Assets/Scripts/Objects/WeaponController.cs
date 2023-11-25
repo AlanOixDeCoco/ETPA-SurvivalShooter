@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class WeaponSpecs
@@ -22,6 +23,9 @@ public class WeaponController : MonoBehaviour
 
     [Header("Weapon parameters")]
     [SerializeField] private WeaponSpecs _weaponSpecs;
+
+    [Header("Events")]
+    public UnityEvent<float, float> _onUpdateMagazine;
 
     // Private variables
     private Animator _animator;
@@ -62,6 +66,8 @@ public class WeaponController : MonoBehaviour
         newBullet.GetComponent<Rigidbody>().velocity = newBullet.transform.rotation * Vector3.forward * _weaponSpecs.bulletSpeed;
 
         if (_ammos <= 0) Reload();
+
+        _onUpdateMagazine?.Invoke(_ammos, _weaponSpecs.magazineSize);
     }
 
     public async void Reload()
@@ -78,5 +84,7 @@ public class WeaponController : MonoBehaviour
 
         _ammos = _weaponSpecs.magazineSize;
         _reloading = false;
+
+        _onUpdateMagazine?.Invoke(_ammos, _weaponSpecs.magazineSize);
     }
 }

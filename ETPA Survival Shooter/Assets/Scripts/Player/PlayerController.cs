@@ -146,4 +146,10 @@ public class PlayerController : MonoBehaviour
     {
         Move(_runSpeed);
     }
+
+    public void Die()
+    {
+        _moveAction.asset.Disable();
+        _characterController.enabled = false;
+    }
 }

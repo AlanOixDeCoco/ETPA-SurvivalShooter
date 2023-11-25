@@ -52,6 +52,8 @@ public class WaveGameState : IState
 
     public void OnEnter()
     {
+        Debug.Log("Entering wave state!");
+
         // Create a new wave object based on the game progression
         _wave = GetNewWave();
 
@@ -69,7 +71,7 @@ public class WaveGameState : IState
     public void OnExit()
     {
         _gameManager.GameStats.time += Time.time - _waveStartTime;
-        _gameManager._onWaveEnd?.Invoke();
+        if(!_gameManager.Gameover)_gameManager._onWaveEnd?.Invoke();
     }
 
     public void Tick()
@@ -126,7 +128,36 @@ public class WaveGameState : IState
             newEnemy.SetActive(false);
             newEnemy.GetComponent<EnemyManager>().Setup(enemyStats, _gameManager.EnemiesPrimaryTarget);
             enemiesGO.Add(newEnemy);
+            await Task.Yield();
         }
         _inactiveEnemies = enemiesGO;
+    }
+}
+
+public class GameoverGameState : IState
+{
+    private GameManager _gameManager;
+
+    public GameoverGameState(GameManager gameManager)
+    {
+        _gameManager = gameManager;
+    }
+
+    public void OnEnter()
+    {
+        Debug.Log("Entering gameover state!");
+
+        Debug.Log("Game stats:");
+        Debug.Log(_gameManager.GameStats);
+    }
+
+    public void OnExit()
+    {
+        return;
+    }
+
+    public void Tick()
+    {
+        return;
     }
 }

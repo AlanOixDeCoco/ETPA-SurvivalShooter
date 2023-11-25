@@ -15,6 +15,7 @@ public class EnemyInactiveState : IState
     public void OnEnter()
     {
         _enemyManager.Agent.enabled = false;
+        _enemyManager.AttackEnabled = false;
     }
 
     public void OnExit()
@@ -40,6 +41,7 @@ public class EnemyMovingState : IState
     public void OnEnter()
     {
         _enemyManager.Agent.enabled = true;
+        _enemyManager.AttackEnabled = false;
     }
 
     public void OnExit()
@@ -53,9 +55,31 @@ public class EnemyMovingState : IState
         {
             _enemyManager.Agent.destination = _enemyManager.Target.position;
         }
-        else
-        {
-            _enemyManager.Agent.destination = _enemyManager.PrimaryTarget.position;
-        }
+    }
+}
+
+public class EnemyAttackingState : IState
+{
+    private EnemyManager _enemyManager;
+
+    public EnemyAttackingState(EnemyManager enemyManager)
+    {
+        _enemyManager = enemyManager;
+    }
+
+    public void OnEnter()
+    {
+        _enemyManager.Agent.enabled = false;
+        _enemyManager.AttackEnabled = true;
+    }
+
+    public void OnExit()
+    {
+        return;
+    }
+
+    public void Tick()
+    {
+        return;
     }
 }

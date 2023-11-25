@@ -13,6 +13,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private SphereCollider _detectionArea;
     [SerializeField] private MeshRenderer[] _enemyMeshes;
     [SerializeField] private Transform _detectionUI;
+    [SerializeField] private ParticleSystem _attackParticles;
+    [SerializeField] private float _attackDistance = 4f;
 
     // Public properties
     public UnityAction OnEnemyDeath { get; private set; }
@@ -20,6 +22,7 @@ public class EnemyManager : MonoBehaviour
     public EnemyStats EnemyStats { get; private set; }
     public Transform PrimaryTarget { get; private set; } = null;
     public Transform Target { get; private set; } = null;
+    public bool AttackEnabled { get { return _attackParticles.emission.enabled; } set { _attackParticles.enableEmission = value; } }
 
     // Private variables
     private bool _isActive = false;
@@ -36,6 +39,7 @@ public class EnemyManager : MonoBehaviour
         // Create states
         var inactiveState = new EnemyInactiveState(this);
         var movingState = new EnemyMovingState(this);
+        var attackingState = new EnemyAttackingState(this);
 
         // Inactive --> Moving
         _stateMachine.AddTransition(inactiveState, movingState, () =>
@@ -50,10 +54,16 @@ public class EnemyManager : MonoBehaviour
         });
 
         // Moving --> Attacking
-        
+        _stateMachine.AddTransition(movingState, attackingState, () =>
+        {
+            return (transform.position - Target.position).magnitude < _attackDistance;
+        });
 
         // Attacking --> Moving
-        
+        _stateMachine.AddTransition(attackingState, movingState, () =>
+        {
+            return (transform.position - Target.position).magnitude > _attackDistance;
+        });
 
         // Set the entry state
         _stateMachine.SetState(inactiveState);
@@ -77,6 +87,8 @@ public class EnemyManager : MonoBehaviour
     private void Update()
     {
         _stateMachine.Tick();
+
+        transform.LookAt(Target);
     }
 
     // Class methods
@@ -92,6 +104,7 @@ public class EnemyManager : MonoBehaviour
         {
             mesh.material = EnemyStats.material;
         }
+        Target = PrimaryTarget;
     }
     public void Die()
     {

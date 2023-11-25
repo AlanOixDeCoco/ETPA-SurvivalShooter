@@ -73,9 +73,11 @@ public class GameManager : MonoBehaviour
     public Transform EnemiesContainer { get => _enemiesContainer; }
     public AnimationCurve SpawnRateCurve { get => _spawnRateCurve; }
     public List<EnemiesSpawner> ActiveSpawners { get => _activeSpawners; }
+    public bool Gameover { get => _gameover; private set => _gameover = value; }
 
     // Private variables
     private StateMachine _stateMachine;
+    private bool _gameover = false;
 
     // Unity methods
     private void Awake()
@@ -85,6 +87,7 @@ public class GameManager : MonoBehaviour
         // Create states
         var standbyGameState = new StandbyGameState(this);
         var waveGameState = new WaveGameState(this);
+        var gameoverState = new GameoverGameState(this);
 
         // Standby --> Wave
         _stateMachine.AddTransition(standbyGameState, waveGameState, () =>
@@ -103,6 +106,12 @@ public class GameManager : MonoBehaviour
             return _enemiesContainer.childCount <= 0;
         });
 
+        // Any --> Gameover
+        _stateMachine.AddAnyTransition(gameoverState, () =>
+        {
+            return Gameover;
+        });
+
         // Set the entry state
         _stateMachine.SetState(standbyGameState);
     }
@@ -115,5 +124,10 @@ public class GameManager : MonoBehaviour
     public void StartNextWave()
     {
         RequestNextWave = true;
+    }
+
+    public void SetGameover()
+    {
+        Gameover = true;
     }
 }
