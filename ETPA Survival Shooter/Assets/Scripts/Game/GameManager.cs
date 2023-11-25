@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     [Header("Events")]
     public UnityEvent<int> _onWaveStart;
     public UnityEvent _onWaveEnd;
+    public UnityEvent _onGameover;
 
     // Public / private set properties
     public GameStats GameStats { get; private set; } = new GameStats();

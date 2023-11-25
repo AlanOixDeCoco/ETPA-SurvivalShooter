@@ -149,6 +149,8 @@ public class GameoverGameState : IState
 
         Debug.Log("Game stats:");
         Debug.Log(_gameManager.GameStats);
+
+        _gameManager._onGameover?.Invoke();
     }
 
     public void OnExit()

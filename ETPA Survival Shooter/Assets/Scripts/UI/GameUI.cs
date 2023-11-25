@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using System.Threading.Tasks;
 
-public class WaveUI : MonoBehaviour
+public class GameUI : MonoBehaviour
 {
     [SerializeField] Transform _startWavePannel;
     [SerializeField] TextMeshProUGUI _startWaveText;
