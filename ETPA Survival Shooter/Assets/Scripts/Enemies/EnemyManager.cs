@@ -62,7 +62,9 @@ public class EnemyManager : MonoBehaviour
         // Attacking --> Moving
         _stateMachine.AddTransition(attackingState, movingState, () =>
         {
-            return (transform.position - Target.position).magnitude > _attackDistance;
+            bool condition = (transform.position - Target.position).magnitude > _attackDistance;
+            condition = condition && (Target != PrimaryTarget);
+            return condition;
         });
 
         // Set the entry state
