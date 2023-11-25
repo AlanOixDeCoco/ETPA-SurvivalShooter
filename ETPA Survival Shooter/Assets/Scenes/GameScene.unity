@@ -45859,6 +45859,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4666680711623710836}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &1495131072 stripped
+MeshCollider:
+  m_CorrespondingSourceObject: {fileID: 9035239318281768206, guid: e9ea47f3c135dae44be2225a5df0e00c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4666680711623710836}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1495131079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45872,7 +45878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 500
-  _invincibleDelay: 1
+  _invincibleDelay: 0.5
   _onHealthChange:
     m_PersistentCalls:
       m_Calls:
@@ -45895,6 +45901,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetGameover
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1495131072}
+        m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -70633,6 +70651,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1547931504}
+    - target: {fileID: 1022755983659394024, guid: f6f100a2bcced134c9e49bef59629cc5,
+        type: 3}
+      propertyPath: _invincibleDelay
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1022755983659394024, guid: f6f100a2bcced134c9e49bef59629cc5,
         type: 3}
       propertyPath: _onHealthAtZero.m_PersistentCalls.m_Calls.Array.data[1].m_Target

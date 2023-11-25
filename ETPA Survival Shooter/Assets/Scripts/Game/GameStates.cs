@@ -151,7 +151,7 @@ public class GameoverGameState : IState
     public void OnEnter()
     {
         System.TimeSpan timeSurvived = System.TimeSpan.FromSeconds(_gameManager.GameStats.time);
-        _gameManager._updateTimeSurvivedText?.Invoke("You survived: " + timeSurvived.TotalHours.ToString() + ":" + timeSurvived.TotalMinutes.ToString() + ":" + timeSurvived.TotalSeconds.ToString());
+        _gameManager._updateTimeSurvivedText?.Invoke("You survived: " + timeSurvived.ToString());
         _gameManager._onGameover?.Invoke();
     }
 
