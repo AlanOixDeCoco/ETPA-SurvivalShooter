@@ -16,10 +16,10 @@ MonoBehaviour:
     name: Agressive Dummy
     material: {fileID: 2100000, guid: 137ba7cb0d171d24eb2287cf19bc6b03, type: 2}
     scale: 1
-    detectionRadius: 10
-    followRadius: 15
+    detectionRadius: 8
+    followRadius: 12
     health: 30
-    speed: 4
+    speed: 6
     damage: 20
     difficulty: 2
     lootProbability: 0

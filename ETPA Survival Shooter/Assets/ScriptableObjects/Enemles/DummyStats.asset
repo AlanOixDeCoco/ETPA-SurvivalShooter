@@ -16,10 +16,10 @@ MonoBehaviour:
     name: Dummy
     material: {fileID: 2100000, guid: 4a980518f9a968145a1e1ccad38b766c, type: 2}
     scale: 1
-    detectionRadius: 4
+    detectionRadius: 5
     followRadius: 8
     health: 40
-    speed: 3
+    speed: 5
     damage: 20
     difficulty: 1
     lootProbability: 0
